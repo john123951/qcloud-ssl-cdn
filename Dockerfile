@@ -16,10 +16,11 @@ COPY requirements.txt /data/
 COPY docker/entrypoint.sh /
 COPY docker/update.sh /data
 
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk update && apk add --no-cache curl openssl socat && \
     ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime && \
     echo "${TZ}" > /etc/timezone && \
-    pip install -r requirements.txt && \
+    pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ && \
     chmod +x /entrypoint.sh /data/update.sh && \
     curl https://get.acme.sh | sh -s email=my@example.com
 
